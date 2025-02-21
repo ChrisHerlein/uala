@@ -16,6 +16,7 @@ var UniqueViolationCode = "23505"
 type DB interface {
 	CreateUser(user *models.User) error
 	Get(name, password string) (*models.User, error)
+	GetByID(id uint) (*models.User, error)
 	Follow(from, to uint) error
 	Unfollow(from, to uint) error
 }
@@ -39,6 +40,12 @@ func (pg *pgdb) Get(name, password string) (*models.User, error) {
 		Password: password,
 	}
 
+	res := pg.db.Where(user).Preload("Follows").First(user)
+	return user, res.Error
+}
+
+func (pg *pgdb) GetByID(userID uint) (*models.User, error) {
+	user := &models.User{ID: userID}
 	res := pg.db.Where(user).Preload("Follows").First(user)
 	return user, res.Error
 }
