@@ -19,6 +19,7 @@ type DB interface {
 	GetByID(id uint) (*models.User, error)
 	Follow(from, to uint) error
 	Unfollow(from, to uint) error
+	GetFollowers(from uint) ([]models.Follow, error)
 }
 
 type pgdb struct {

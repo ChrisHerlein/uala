@@ -13,6 +13,7 @@ const pageLength = 5
 type DB interface {
 	CreateTweet(tweet *models.Content) error
 	ReadTweets(userName string, page int) ([]models.Content, error)
+	Filter(query string, args []interface{}) ([]models.Content, error)
 }
 
 type pgdb struct {
