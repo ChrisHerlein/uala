@@ -3,11 +3,11 @@ module github.com/ChrisHerlein/uala/tuala-api-contents
 go 1.23.0
 
 require (
-	github.com/ChrisHerlein/uala/tuala-api-users v0.0.0-20250220193100-39ad1c4165fc
+	github.com/ChrisHerlein/uala/tuala-api-users v0.0.0-20250221220938-31bc03c49405
 	github.com/beanstalkd/go-beanstalk v0.2.0
 	github.com/gofiber/fiber/v3 v3.0.0-beta.4
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/redis/go-redis/v9 v9.7.0
+	github.com/redis/go-redis/v9 v9.7.1
 	gorm.io/driver/postgres v1.5.11
 	gorm.io/gorm v1.25.12
 )
