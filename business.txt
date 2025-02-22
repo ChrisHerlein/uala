@@ -1,0 +1,2 @@
+- Decided to sort "tweets" by creation date. Can be done via importance by user, but by date (as original twitter) will do it.
+- I assume budget is not a problem, because solution is quite aggresive with caching.

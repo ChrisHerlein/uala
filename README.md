@@ -45,12 +45,9 @@ Note: after quit, beankstalk container (queue server) may hang up. It is good id
 # Steps for develop:
 	1. Create design principles (this doc).
 	2. Create specifications based on requirements pdf (stored at `docs/` directory).
-	3. Create docker-compose yaml to build up the environment.
-	4. 
+	3. Develop apis and worker
+	4. Create docker-compose yaml to build up the environment.
 
 # TODOS:
-	- Setup contents api
-	- Setup cache worker
 	- Remove redis connection from users
 	- Implement smoke test for main flows: create user, follow, post content, read feed, unfollow
-	- Implement pagination in service and repo content read

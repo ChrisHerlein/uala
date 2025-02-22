@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"strconv"
-
 	"github.com/gofiber/fiber/v3"
 
 	"github.com/ChrisHerlein/uala/tuala-api-contents/src/enums"
@@ -20,9 +18,7 @@ type feed struct {
 
 func (f *feed) Recent() func(fiber.Ctx) error {
 	return func(c fiber.Ctx) error {
-		pageParam := c.Params("page")
-		page, _ := strconv.Atoi(pageParam) // if errored, let retreive first page
-		feed, err := f.srv.Recent(c.Context(), page)
+		feed, err := f.srv.Recent(c.Context())
 		if err != nil {
 			return c.Status(enums.GetErrorCode(err, fiber.StatusInternalServerError)).
 				JSON(map[string]string{"error": err.Error()})

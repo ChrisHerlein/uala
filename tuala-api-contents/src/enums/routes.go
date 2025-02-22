@@ -2,7 +2,7 @@ package enums
 
 const (
 	FeedRoutes      = "/feed"
-	FeedRecentRoute = "/recent/:page"
+	FeedRecentRoute = "/recent"
 
 	ContentRoutes = "contents"
 	ContentGet    = "/:name/:page"

@@ -67,7 +67,7 @@ func (pg *pgdb) Follow(from, to uint) error {
 
 func (pg *pgdb) Unfollow(from, to uint) error {
 	uf := &models.Follow{}
-	res := pg.db.Delete(uf, "user_refer = ? AND follows = ?", from, to)
+	res := pg.db.Unscoped().Delete(uf, "user_refer = ? AND follows = ?", from, to)
 	return res.Error
 }
 

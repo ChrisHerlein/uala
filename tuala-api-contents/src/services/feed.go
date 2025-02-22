@@ -9,14 +9,14 @@ import (
 )
 
 type Feed interface {
-	Recent(ctx context.Context, page int) ([]models.Content, error)
+	Recent(ctx context.Context) ([]models.Content, error)
 }
 
 type feed struct {
 	cache repositories.Cache
 }
 
-func (f *feed) Recent(ctx context.Context, page int) ([]models.Content, error) {
+func (f *feed) Recent(ctx context.Context) ([]models.Content, error) {
 	userID := ctx.Value(enums.CtxUserID).(uint)
 	pages, err := f.cache.GetFeed(userID)
 	if err != nil {

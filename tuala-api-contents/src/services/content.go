@@ -28,7 +28,7 @@ func (c *content) Create(ctx context.Context, text string) (*models.Content, err
 		return nil, err
 	}
 
-	go c.cache.RecreateFeed(ctx.Value(enums.CtxUserID).(uint))
+	go c.cache.RecreateFeed(ctx.Value(enums.CtxUserID).(uint), tweet.ID)
 
 	return tweet, nil
 }

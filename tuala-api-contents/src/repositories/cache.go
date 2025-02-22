@@ -13,12 +13,13 @@ import (
 )
 
 type message struct {
-	UserID   uint `json:"userId"`
-	PageRead int  `json:"pageRead"`
+	UserID    uint `json:"userId"`
+	ContentID uint `json:"contentId"`
+	PageRead  int  `json:"pageRead"`
 }
 
 type WorkerCache interface {
-	RecreateFeed(userID uint) error
+	RecreateFeed(userID, contentID uint) error
 	MarkPageRead(userID uint, pageNumber int)
 }
 
@@ -37,18 +38,18 @@ type cache struct {
 }
 
 type workerCache struct {
-	beanstalk  *beanstalk.Conn
-	tubeFollow *beanstalk.Tube
-	tubeRead   *beanstalk.Tube
+	beanstalk      *beanstalk.Conn
+	tubeNewContent *beanstalk.Tube
+	tubeRead       *beanstalk.Tube
 }
 
-func (wc *workerCache) RecreateFeed(userID uint) error {
-	msg := message{UserID: userID}
+func (wc *workerCache) RecreateFeed(userID, contentID uint) error {
+	msg := message{UserID: userID, ContentID: contentID}
 	msgBytes, err := json.Marshal(msg)
 	if err != nil {
 		return err
 	}
-	_, err = wc.tubeFollow.Put(msgBytes, 1, 0, 0)
+	_, err = wc.tubeNewContent.Put(msgBytes, 1, 0, 0)
 	return err
 }
 
@@ -64,9 +65,9 @@ func (wc *workerCache) MarkPageRead(userID uint, pageNumber int) {
 
 func NewWorkerCache(bc *beanstalk.Conn) *workerCache {
 	return &workerCache{
-		beanstalk:  bc,
-		tubeFollow: beanstalk.NewTube(bc, enums.QueueRecreateFeedNewContent),
-		tubeRead:   beanstalk.NewTube(bc, enums.QueueRecreateFeedPageRead),
+		beanstalk:      bc,
+		tubeNewContent: beanstalk.NewTube(bc, enums.QueueRecreateFeedNewContent),
+		tubeRead:       beanstalk.NewTube(bc, enums.QueueRecreateFeedPageRead),
 	}
 }
 

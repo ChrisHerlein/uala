@@ -71,11 +71,6 @@ func (u *users) Unfollow(ctx context.Context, to string) (*models.User, error) {
 		return nil, fmt.Errorf("%w %w", enums.Err503, err)
 	}
 
-	err = u.cache.RecreateFeed(fromID)
-	if err != nil {
-		return nil, fmt.Errorf("%w %w", enums.Err503, err)
-	}
-
 	fromName := ctx.Value(enums.CtxUserName).(string)
 	return u.db.Get(fromName, "")
 }
