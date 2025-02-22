@@ -12,4 +12,5 @@ const (
 
 const (
 	QueueRecreateFeedNewContent = "recreate-by-newcontent"
+	QueueRecreateFeedPageRead   = "page-read"
 )

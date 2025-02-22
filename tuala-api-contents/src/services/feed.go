@@ -17,8 +17,19 @@ type feed struct {
 }
 
 func (f *feed) Recent(ctx context.Context, page int) ([]models.Content, error) {
-	userName := ctx.Value(enums.CtxUserName).(string)
-	return f.cache.GetFeed(userName, page)
+	userID := ctx.Value(enums.CtxUserID).(uint)
+	pages, err := f.cache.GetFeed(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	var content = make([]models.Content, 0)
+	for i := 0; i < len(pages); i++ {
+		content = append(content, pages[i].Content...)
+		f.cache.MarkPageRead(userID, pages[i].Order)
+	}
+
+	return content, nil
 }
 
 func NewFeed(cache repositories.Cache) *feed {
