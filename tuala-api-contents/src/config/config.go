@@ -5,8 +5,7 @@ import (
 )
 
 type Config struct {
-	Port       string `required:"true" split_words:"true"`
-	TualaUsers string `required:"true" split_words:"true"`
+	Port string `required:"true" split_words:"true"`
 
 	BeanstalkHost string `required:"true" split_words:"true"`
 
