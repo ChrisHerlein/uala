@@ -48,7 +48,7 @@ To track amount of pages, there will be a "control" document into Redis, also up
 
 Then, document with the content will be stored with its page number, with most recent content into the highest page number, at the begining of its content array.
 
-For more details, check document into `docs/`
+For more details, check document into `docs/` and comments into `tuala-worker-cache/models.go`.
 
 # Trade-offs:
 - It is better to use one DB per service (user and content), but for simplify reasons will share DB and separate domains by tables.
