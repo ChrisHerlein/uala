@@ -4,7 +4,9 @@ Readme!
 
 docker-compose up --force-recreate
 
-Note: after quit, beankstalk container (queue server) may hang up. It is good idea to execute "docker-compose down" manually.
+Notes: 
+- first time, it may failed due to db not ready when api tries to connect. Just ctrl-c and re run the command.
+- after quit, beankstalk container (queue server) may hang up. It is good idea to execute "docker-compose down" manually.
 
 # Design:
 	- Will approach via clean architecture strategy, based on microservices.
@@ -25,6 +27,20 @@ Note: after quit, beankstalk container (queue server) may hang up. It is good id
 		- Woker will expose a client to make it easier to integrate.
 	- Testing:
 		- Will apply TDD, with guidence on formal specifications
+
+# Testing
+
+Original idea was to apply tdd based on specifications; but checking available time, that would be impossible.
+So, switched to idea of create a smoke test to cover main aspects: user registration, content creation and user feed.
+
+# Cache Strategy
+
+As platform is heavily oriented to content consumption, I will go for an aggressive cache strategy.
+The idea is to have all feed content for the user in Redis (cache server), ready to be served to user and updated every time a user that is being followed by the feed's owner user post some new content, or the feed owner adds a new following user.
+The content will be stored into pages containing up to 10 "tweets", that are destroyed when the user reads it (to avoid eternal pages into Redis).
+To track amount of pages, there will be a "control" document into Redis, also updated on new content.
+Then, document with the content will be stored with its page number, with most recent content into the highest page number, at the begining of its content array.
+For more details, check document into docs/
 
 # Trade-offs:
 	- It is better to use one DB per service (user and content), but for simplify reasons will share DB and separate domains by tables.
