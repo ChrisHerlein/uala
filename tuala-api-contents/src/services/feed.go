@@ -20,7 +20,8 @@ func (f *feed) Recent(ctx context.Context) ([]models.Content, error) {
 	userID := ctx.Value(enums.CtxUserID).(uint)
 	pages, err := f.cache.GetFeed(userID)
 	if err != nil {
-		return nil, err
+		// to avoid empty feed causes an error
+		return []models.Content{}, nil
 	}
 
 	var content = make([]models.Content, 0)

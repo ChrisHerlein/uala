@@ -1,0 +1,104 @@
+version: '3'
+
+services:
+  database:
+    image: 'postgres:latest'
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: uala # The PostgreSQL user (useful to connect to the database)
+      POSTGRES_PASSWORD: challenge # The PostgreSQL password (useful to connect to the database)
+      POSTGRES_DB: tuala # The PostgreSQL default database (automatically created at first launch)
+    volumes:
+      - ${PWD}/db-data/:/var/lib/postgresql/data/
+    networks:
+      - uala
+  beanstalkd:
+    image: 'bodsch/docker-beanstalkd:latest'
+    restart: always
+    ports:
+      - 11300:11300
+    networks:
+      - uala
+  redis:
+    image: redis:6.0.7
+    restart: always
+    ports:
+      - 6379:6379
+    networks:
+      - uala
+    volumes:
+      - ${PWD}/redis-data/:/data
+  tuala-api-users:
+    build:
+      dockerfile: 'Dockerfile'
+      context: './tuala-api-users'
+    environment:
+      PORT: '8080'
+      BEANSTALK_HOST: 'beanstalkd:11300'
+      REDIS_HOST: 'redis:6379'
+      PG_HOST: 'database'
+      PG_DB: 'tuala'
+      PG_USER: 'uala'
+      PG_PASSWORD: 'challenge'
+      PG_PORT: '5432'
+    ports:
+      - 8090:8080
+    depends_on:
+      database:
+        condition: service_started
+      redis:
+        condition: service_started
+      beanstalkd:
+        condition: service_started
+    networks:
+      - uala
+  tuala-api-contents:
+    build:
+      dockerfile: 'Dockerfile'
+      context: './tuala-api-contents'
+    environment:
+      PORT: '8080'
+      BEANSTALK_HOST: 'beanstalkd:11300'
+      REDIS_HOST: 'redis:6379'
+      PG_HOST: 'database'
+      PG_DB: 'tuala'
+      PG_USER: 'uala'
+      PG_PASSWORD: 'challenge'
+      PG_PORT: '5432'
+    ports:
+      - 8091:8080
+    depends_on:
+      database:
+        condition: service_started
+      redis:
+        condition: service_started
+      beanstalkd:
+        condition: service_started
+    networks:
+      - uala
+  tuala-worker-cache:
+    build:
+      dockerfile: 'Dockerfile'
+      context: './tuala-worker-cache'
+    environment:
+      BEANSTALK_HOST: 'beanstalkd:11300'
+      REDIS_HOST: 'redis:6379'
+      PG_HOST: 'database'
+      PG_DB: 'tuala'
+      PG_USER: 'uala'
+      PG_PASSWORD: 'challenge'
+      PG_PORT: '5432'
+    depends_on:
+      database:
+        condition: service_started
+      redis:
+        condition: service_started
+      beanstalkd:
+        condition: service_started
+    networks:
+      - uala
+
+networks:
+  uala:
+    driver: bridge

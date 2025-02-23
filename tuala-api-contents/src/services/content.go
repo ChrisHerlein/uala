@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/ChrisHerlein/uala/tuala-api-contents/src/enums"
 	"github.com/ChrisHerlein/uala/tuala-api-contents/src/models"
@@ -19,6 +20,9 @@ type content struct {
 }
 
 func (c *content) Create(ctx context.Context, text string) (*models.Content, error) {
+	if len(text) > 240 {
+		return nil, fmt.Errorf("%w text is longer than 240", enums.Err400)
+	}
 	tweet := &models.Content{
 		AuthorName: ctx.Value(enums.CtxUserName).(string),
 		Text:       text,

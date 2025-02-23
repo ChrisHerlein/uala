@@ -71,7 +71,9 @@ func (e *engine) recreateByFollow(msg message) {
 	ctrlDoc := e.getControlDoc(msg.UserID)
 
 	// if last page not completed, get lastPage
-	lastPage := &feedPage{}
+	lastPage := &feedPage{
+		UserName: user.Name,
+	}
 	if ctrlDoc.SizeOfLast != pageSize && ctrlDoc.MostRecent != 0 {
 		lastPage = e.getLastPage(msg.UserID, ctrlDoc.MostRecent)
 		remainingLastPage := pageSize - len(lastPage.Content)
@@ -90,6 +92,7 @@ func (e *engine) recreateByFollow(msg message) {
 		// update last page
 		e.upsertPage(msg.UserID, lastPage)
 		ctrlDoc.SizeOfLast = len(lastPage.Content)
+		ctrlDoc.Last = lastPage.Content[0].CreatedAt
 	}
 
 	// check if new page is needed
@@ -110,6 +113,7 @@ func (e *engine) recreateByFollow(msg message) {
 		e.upsertPage(msg.UserID, &newPage)
 		ctrlDoc.SizeOfLast = len(newPage.Content)
 		ctrlDoc.MostRecent = newPage.Order
+		ctrlDoc.Last = newPage.Content[0].CreatedAt
 	}
 
 	// update control doc
@@ -176,6 +180,11 @@ func (e *engine) recreateByContent(msg message) {
 func (e *engine) recreateUserFeedByContent(userID uint, content contentModels.Content) {
 	// Get control doc
 	ctrlDoc := e.getControlDoc(userID)
+
+	// check is feedable
+	if !ctrlDoc.Last.Before(content.CreatedAt) {
+		return
+	}
 
 	// lets guess we need to create a new page
 	var page = &feedPage{

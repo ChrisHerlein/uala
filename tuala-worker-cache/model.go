@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"github.com/ChrisHerlein/uala/tuala-api-contents/src/models"
 )
 
@@ -11,7 +13,8 @@ type feedPage struct {
 }
 
 type control struct {
-	UserName   string `json:"userName"`
-	MostRecent int    `json:"mostRecent"` // #order of last page
-	SizeOfLast int    `json:"sizeOfLast"`
+	UserName   string    `json:"userName"`
+	MostRecent int       `json:"mostRecent"` // #order of last page
+	SizeOfLast int       `json:"sizeOfLast"`
+	Last       time.Time `json:"last"`
 }
