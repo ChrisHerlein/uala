@@ -1,0 +1,17 @@
+title Cache Strategy
+
+APIs->Queue: A follows B || B creates content
+Queue->Worker:Upsert with user B content
+Worker<-->Redis:Ask for control document
+Redis<-->Worker:Ask for last content page
+note over Worker:Updates control and content
+Worker-->Redis:Writes updated control
+Worker-->Redis:Writes updated content
+note over Redis:Has one control document
+note over Redis:Has N content documents (pages)
+APIs<->Redis:Ask for control and pages N and N-1
+APIs->Queue:Let know pages N and N-1 had been read
+Queue->Worker:Ask pages N and N-1 to be deleted
+Worker<-->Redis:Ask for control document
+note over Worker:Updates control document
+Worker-->Redis:Deletes pages N and N-1

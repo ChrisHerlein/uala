@@ -65,6 +65,7 @@ For more details, check document into `docs/`
 - Cache server will be Redis (official docker image)
 - Project language will be Go, with Fiber framework and "gorm" as ORM.
 - "deploy" process will be via docker-compose
+- Sequence diagram for cache by: https://sequencediagram.org/
 
 # Steps for develop:
 1. Create design principles (this doc).
